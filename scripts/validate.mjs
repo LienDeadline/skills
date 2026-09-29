@@ -72,9 +72,10 @@ for (const field of ["florida_final_payment_status", "florida_termination_status
 for (const field of ["florida_final_payment_date", "florida_termination_date"]) {
   check(/matching `yes`/.test(requestRows.get(field) ?? ""), `${field} needs a matching yes answer`);
 }
-check(/direct HTTP/i.test(supplierSkill) && /MCP.*v1|v1.*MCP/.test(supplierSkill) &&
-    /do not use it for deadline dates until a v2 MCP artifact is verified/i.test(supplierSkill),
-  "liendeadline skill must use direct HTTP v2 and exclude the pinned MCP v1 tool from deadline dates");
+check(/direct HTTP/i.test(supplierSkill), "liendeadline skill must keep the direct HTTP v2 path");
+check(/`calculate_supplier_deadlines` tool when its inputs include `florida_final_payment_status`/.test(supplierSkill) &&
+    /lacks those event-answer inputs/.test(supplierSkill),
+  "liendeadline skill may route deadline dates to the MCP calculator only when it accepts the v2 event answers");
 
 // Layout rules: a root SKILL.md hides every other skill from the skills CLI; claude.ai refuses a
 // top-level bin/; directory reviews reject .DS_Store files.
@@ -130,6 +131,11 @@ for (const [file, server] of [
 }
 check(agentMcp.mcpServers?.liendeadline?.type === "stdio", "mcp.json: server type must be stdio");
 check(pins.size <= 1, `MCP pins differ between manifests: ${[...pins].join(", ")}`);
+// The skill routes deadline dates to this pin, and releases before 0.3.0 send supplier-events-v1.
+for (const pin of pins) {
+  const [major, minor] = pin.split("@")[1].split(".").map(Number);
+  check(major > 0 || minor >= 3, `${pin} sends supplier-events-v1; pin liendeadline-mcp 0.3.0 or later`);
+}
 
 // Anthropic's directory needs at least 40 words of README prose (code blocks excluded).
 const prose = readFileSync(join(root, "README.md"), "utf8").replace(/```[\s\S]*?```/g, "");
