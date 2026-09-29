@@ -9,20 +9,6 @@
   "license": "MIT",
   "keywords": ["mechanics-lien", "preliminary-notice", "notice-to-owner", "construction", "lien-deadlines", "mcp"],
   "mcpServers": {
-    "liendeadline": {
-      "command": "npx",
-      "args": ["-y", "liendeadline-mcp@0.3.0"],
-      "env": { "LIENDEADLINE_API_KEY": "${user_config.api_key}" }
-    }
-  },
-  "userConfig": {
-    "api_key": {
-      "type": "string",
-      "title": "LienDeadline customer API key (optional)",
-      "description": "Only the customer invoice tools use it. Leave empty to use the free supplier calculation and state guides.",
-      "sensitive": true,
-      "required": false,
-      "default": ""
-    }
+    "liendeadline": { "command": "npx", "args": ["-y", "liendeadline-mcp@0.3.0"] }
   }
 }

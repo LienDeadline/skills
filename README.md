@@ -59,7 +59,10 @@ Codex reads the same marketplace with `codex plugin marketplace add LienDeadline
 | Skill | Instructions only, no code | The agent sends the project facts and event answers to LienDeadline's public supplier-events-v2 API, through the MCP server or a direct HTTPS tool. No account or key; the API does not save them. |
 | MCP server (plugin manifests) | [`liendeadline-mcp`](https://github.com/LienDeadline/liendeadline-mcp), started locally with `npx -y liendeadline-mcp@0.3.0`. It sends supplier-events-v2 with the explicit event answers. | The same facts and answers, to `secure-api-v1.liendeadline.com` only. No telemetry. Its state guides are editorial references. |
 
-The public supplier endpoint needs no key. When you enable the Claude Code plugin, it offers an optional, masked field for a LienDeadline customer API key, which only the MCP server's customer invoice tools use; leave it empty for the free tools. The plugin never reads a key from your environment. See LienDeadline's [privacy policy](https://liendeadline.com/privacy).
+The public supplier endpoint needs no key, and the plugins configure none. See LienDeadline's [privacy policy](https://liendeadline.com/privacy).
+
+The MCP server runs locally over stdio, so it works in Claude Code and Cowork but not directly on claude.ai; there the
+skill still works through a direct HTTPS tool. `scripts/` holds developer checks that CI runs; the plugin never runs them.
 
 ## Layout
 
