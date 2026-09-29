@@ -7,7 +7,7 @@ preliminary notice deadlines for US construction material suppliers.
 
 | Skill | What it does |
 | --- | --- |
-| [`liendeadline`](skills/liendeadline/SKILL.md) | Asks for delivery facts and explicit Florida or Kansas event answers, calls the public supplier-events-v2 API through direct HTTPS, and explains each result with its statute sources. |
+| [`liendeadline`](skills/liendeadline/SKILL.md) | Asks for delivery facts and explicit Florida or Kansas event answers, calls the public supplier-events-v2 API through the LienDeadline MCP server or direct HTTPS, and explains each result with its statute sources. |
 
 ## Coverage
 
@@ -56,10 +56,13 @@ Codex reads the same marketplace with `codex plugin marketplace add LienDeadline
 
 | Part | What it is | What it sends |
 | --- | --- | --- |
-| Skill | Instructions only, no code | An authorized direct HTTPS tool sends the project facts to LienDeadline's public supplier-events-v2 API. No account or key; the API does not save them. |
-| MCP server (plugin manifests) | [`liendeadline-mcp`](https://github.com/LienDeadline/liendeadline-mcp) is pinned at v0.2.0, which sends supplier-events-v1. | Do not use its supplier calculation tool for deadline dates until a v2 artifact is verified. Its state guides remain editorial references. |
+| Skill | Instructions only, no code | The agent sends the project facts and event answers to LienDeadline's public supplier-events-v2 API, through the MCP server or a direct HTTPS tool. No account or key; the API does not save them. |
+| MCP server (plugin manifests) | [`liendeadline-mcp`](https://github.com/LienDeadline/liendeadline-mcp), started locally with `npx -y liendeadline-mcp@0.3.1`. It sends supplier-events-v2 with the explicit event answers, and its published `npm-shrinkwrap.json` locks every dependency version. | The same facts and answers, to `secure-api-v1.liendeadline.com` only. No telemetry. Its state guides are editorial references. |
 
-The public supplier endpoint needs no key. See LienDeadline's [privacy policy](https://liendeadline.com/privacy).
+The public supplier endpoint needs no key, and the plugins configure none. See LienDeadline's [privacy policy](https://liendeadline.com/privacy).
+
+The MCP server runs locally over stdio, so it works in Claude Code and Cowork but not directly on claude.ai; there the
+skill still works through a direct HTTPS tool. `scripts/` holds developer checks that CI runs; the plugin never runs them.
 
 ## Layout
 

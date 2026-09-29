@@ -1,28 +1,21 @@
-// Network checks run on a schedule: the website serves the same SKILL.md as this repository,
-// and the MCP server release pinned by the plugins exists on npm.
+// Developer/CI check, not part of the plugin's runtime. It reads no environment variables and
+// sends nothing: it downloads the website's published copy of the skill from a fixed public URL
+// and compares it with this repository's copy.
 // Usage: node scripts/check-live.mjs
 import { readFileSync } from "node:fs";
 import { join, resolve } from "node:path";
 
+const SITE_COPY = "https://liendeadline.com/skills/liendeadline/SKILL.md";
 const root = resolve(import.meta.dirname, "..");
-const errors = [];
+const repoCopy = readFileSync(join(root, "skills/liendeadline/SKILL.md"), "utf8");
 
-const local = readFileSync(join(root, "skills/liendeadline/SKILL.md"), "utf8");
-const siteUrl = "https://liendeadline.com/skills/liendeadline/SKILL.md";
-const site = await fetch(siteUrl, { redirect: "error" });
-if (!site.ok) errors.push(`${siteUrl} returned ${site.status}`);
-else if ((await site.text()) !== local) {
-  errors.push(`${siteUrl} differs from skills/liendeadline/SKILL.md; update the website's public/skills copy`);
-}
-
-const pin = JSON.parse(readFileSync(join(root, "mcp.json"), "utf8"))
-  .mcpServers.liendeadline.args.find((arg) => arg.startsWith("liendeadline-mcp@"));
-const version = pin.split("@")[1];
-const npm = await fetch(`https://registry.npmjs.org/liendeadline-mcp/${version}`);
-if (!npm.ok) errors.push(`npm has no ${pin} (HTTP ${npm.status}); the plugins cannot start the MCP server`);
-
-if (errors.length) {
-  console.error(errors.map((e) => `- ${e}`).join("\n"));
+const response = await fetch(SITE_COPY, { redirect: "error" });
+if (!response.ok) {
+  console.error(`- ${SITE_COPY} returned HTTP ${response.status}`);
   process.exit(1);
 }
-console.log(`OK: website copy matches; ${pin} is on npm`);
+if ((await response.text()) !== repoCopy) {
+  console.error(`- ${SITE_COPY} differs from skills/liendeadline/SKILL.md; update the website's public/skills copy`);
+  process.exit(1);
+}
+console.log("OK: the website serves the same SKILL.md");

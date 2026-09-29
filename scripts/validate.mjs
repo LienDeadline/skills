@@ -1,4 +1,5 @@
-// Offline checks for the rules that skill directories and plugin reviewers enforce.
+// Developer/CI check, not part of the plugin's runtime: offline checks for the rules that skill
+// directories and plugin reviewers enforce. It reads no environment variables and makes no network requests.
 // Usage: node scripts/validate.mjs
 import { existsSync, readdirSync, readFileSync, statSync } from "node:fs";
 import { spawnSync } from "node:child_process";
@@ -20,8 +21,8 @@ function frontmatter(path) {
   const fields = {};
   for (const line of match[1].split("\n")) {
     if (/^\s/.test(line) || line.trim() === "") continue; // nested metadata values
-    const [, key, value] = /^([^:]+):\s*(.*)$/.exec(line) ?? [];
-    if (key) fields[key.trim()] = value.trim().replace(/^["']|["']$/g, "");
+    const [, field, value] = /^([^:]+):\s*(.*)$/.exec(line) ?? [];
+    if (field) fields[field.trim()] = value.trim().replace(/^["']|["']$/g, "");
   }
   return { fields, text };
 }
@@ -35,7 +36,7 @@ for (const dir of skillDirs) {
   if (!existsSync(path)) { errors.push(`${where} is missing`); continue; }
   const { fields, text } = frontmatter(path);
   if (!fields) { errors.push(`${where} has no YAML frontmatter`); continue; }
-  for (const key of Object.keys(fields)) check(FRONTMATTER_KEYS.has(key), `${where}: unexpected frontmatter key "${key}"`);
+  for (const field of Object.keys(fields)) check(FRONTMATTER_KEYS.has(field), `${where}: unexpected frontmatter field "${field}"`);
   const { name = "", description = "", compatibility } = fields;
   check(name.length >= 1 && name.length <= 64 && NAME.test(name), `${where}: name "${name}" breaks the naming rule`);
   check(name === dir, `${where}: name "${name}" must equal its folder "${dir}"`);
@@ -72,9 +73,10 @@ for (const field of ["florida_final_payment_status", "florida_termination_status
 for (const field of ["florida_final_payment_date", "florida_termination_date"]) {
   check(/matching `yes`/.test(requestRows.get(field) ?? ""), `${field} needs a matching yes answer`);
 }
-check(/direct HTTP/i.test(supplierSkill) && /MCP.*v1|v1.*MCP/.test(supplierSkill) &&
-    /do not use it for deadline dates until a v2 MCP artifact is verified/i.test(supplierSkill),
-  "liendeadline skill must use direct HTTP v2 and exclude the pinned MCP v1 tool from deadline dates");
+check(/direct HTTP/i.test(supplierSkill), "liendeadline skill must keep the direct HTTP v2 path");
+check(/`calculate_supplier_deadlines` tool when its inputs include `florida_final_payment_status`/.test(supplierSkill) &&
+    /lacks those event-answer inputs/.test(supplierSkill),
+  "liendeadline skill may route deadline dates to the MCP calculator only when it accepts the v2 event answers");
 
 // Layout rules: a root SKILL.md hides every other skill from the skills CLI; claude.ai refuses a
 // top-level bin/; directory reviews reject .DS_Store files.
@@ -110,10 +112,10 @@ const entry = marketplace.plugins?.find((p) => p.name === pluginName);
 check(entry?.source === "./", `marketplace.json: plugin "${pluginName}" must use source "./"`);
 
 check(agentPlugin.$schema === "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json", "plugin.json: unexpected $schema");
-const agentPluginKeys = ["$schema", "name", "version", "description", "author", "homepage", "repository", "license", "keywords", "extensions"];
-for (const key of Object.keys(agentPlugin)) check(agentPluginKeys.includes(key), `plugin.json: "${key}" is not allowed by Agent Plugins 1.0.0`);
+const agentPluginFields = ["$schema", "name", "version", "description", "author", "homepage", "repository", "license", "keywords", "extensions"];
+for (const field of Object.keys(agentPlugin)) check(agentPluginFields.includes(field), `plugin.json: "${field}" is not allowed by Agent Plugins 1.0.0`);
 check(agentMcp.$schema === "https://agent-plugins.org/schemas/1.0.0/mcp.schema.json", "mcp.json: unexpected $schema");
-for (const key of Object.keys(agentMcp)) check(["$schema", "mcpServers"].includes(key), `mcp.json: "${key}" is not allowed`);
+for (const field of Object.keys(agentMcp)) check(["$schema", "mcpServers"].includes(field), `mcp.json: "${field}" is not allowed`);
 
 const PIN = /^liendeadline-mcp@\d+\.\d+\.\d+$/;
 const pins = new Set();
@@ -129,7 +131,19 @@ for (const [file, server] of [
   if (pin) pins.add(pin);
 }
 check(agentMcp.mcpServers?.liendeadline?.type === "stdio", "mcp.json: server type must be stdio");
-check(pins.size <= 1, `MCP pins differ between manifests: ${[...pins].join(", ")}`);
+const pinList = Array.from(pins).join(", ");
+check(pins.size <= 1, `MCP pins differ between manifests: ${pinList}`);
+// The skill routes deadline dates to this pin, and releases before 0.3.0 send supplier-events-v1.
+for (const pin of pins) {
+  const [major, minor] = pin.split("@")[1].split(".").map(Number);
+  check(major > 0 || minor >= 3, `${pin} sends supplier-events-v1; pin liendeadline-mcp 0.3.0 or later`);
+}
+
+// Claude's plugin directory shows .claude-plugin/icon.svg: a square SVG of at least 128 px.
+const icon = existsSync(join(root, ".claude-plugin/icon.svg")) ? readFileSync(join(root, ".claude-plugin/icon.svg"), "utf8") : "";
+const [, iconWidth, iconHeight] = /<svg[^>]*\bwidth="(\d+)"[^>]*\bheight="(\d+)"/.exec(icon) ?? [];
+check(icon.startsWith("<svg") && iconWidth === iconHeight && Number(iconWidth) >= 128,
+  ".claude-plugin/icon.svg must be a square SVG of at least 128 x 128 px");
 
 // Anthropic's directory needs at least 40 words of README prose (code blocks excluded).
 const prose = readFileSync(join(root, "README.md"), "utf8").replace(/```[\s\S]*?```/g, "");
@@ -148,4 +162,4 @@ if (errors.length) {
   console.error(errors.map((e) => `- ${e}`).join("\n"));
   process.exit(1);
 }
-console.log(`OK: ${skillDirs.length} skill(s), plugin ${pluginName}@${version}, ${[...pins][0]}`);
+console.log(`OK: ${skillDirs.length} skill(s), plugin ${pluginName}@${version}, ${pinList}`);
