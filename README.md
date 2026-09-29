@@ -10,10 +10,9 @@ preliminary notice deadlines for US construction material suppliers.
 ## Coverage
 
 - **Lien guides:** all 50 states and DC.
-- **Calculated supplier deadlines:** Florida and Kansas private projects, the states whose supplier
-  rules have been reviewed so far. For other states, public projects, or when unusual
-  project events have not been ruled out, the answer is "needs legal review" instead of a
-  guessed date.
+- **Calculated supplier deadlines:** private projects in all 50 states and DC. For public projects,
+  or when unusual project events have not been ruled out, the answer is "needs legal review"
+  instead of a guessed date.
 
 Results are not legal advice.
 
