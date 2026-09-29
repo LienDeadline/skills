@@ -1,17 +1,21 @@
 # LienDeadline agent skills
 
-[![skills.sh](https://skills.sh/b/liendeadline/skills)](https://skills.sh/liendeadline/skills)
-
-Agent skills and plugins for [LienDeadline](https://liendeadline.com): US mechanics lien and
-preliminary notice deadline baselines for construction material suppliers.
+Agent skills and plugins for [LienDeadline](https://liendeadline.com): mechanics lien and
+preliminary notice deadlines for US construction material suppliers.
 
 | Skill | What it does |
 | --- | --- |
-| [`liendeadline`](skills/liendeadline/SKILL.md) | Collects a supplier's delivery facts, calculates the preliminary notice and lien filing baselines with LienDeadline's public supplier-events API or MCP server, checks the result, and routes anything it cannot calculate to qualified review. |
+| [`liendeadline`](skills/liendeadline/SKILL.md) | Asks the user for the project's delivery facts, calculates the preliminary notice and lien filing deadlines with LienDeadline, and explains the result with its statute sources. |
 
-Reviewed date baselines cover Florida and Kansas private projects. Other states, public projects
-and unreviewed special events return a review-required result instead of a date. Results are
-calculated baselines, not legal advice.
+## Coverage
+
+- **Lien guides:** all 50 states and DC.
+- **Calculated supplier deadlines:** Florida and Kansas private projects, the states whose supplier
+  rules have been reviewed so far. For other states, public projects, or when unusual
+  project events have not been ruled out, the answer is "needs legal review" instead of a
+  guessed date.
+
+Results are not legal advice.
 
 ## Install
 
@@ -48,18 +52,12 @@ Codex reads the same marketplace with `codex plugin marketplace add LienDeadline
 
 ## What runs and what is sent
 
-- **The skill** tells the agent to collect project facts from the user and either call the MCP
-  server's `calculate_supplier_deadlines` tool or POST the facts to
-  `https://secure-api-v1.liendeadline.com/api/v1/supplier-deadlines`. That endpoint is public and
-  stateless: it needs no account or key and does not save the submitted facts.
-- **The plugins** (Claude Code, Gemini CLI and the Agent Plugins manifest) also start the
-  open-source [LienDeadline MCP server](https://github.com/LienDeadline/liendeadline-mcp) with
-  `npx -y liendeadline-mcp@0.2.0`, pinned to an exact version. It runs locally over stdio, has
-  no telemetry, and only calls `https://secure-api-v1.liendeadline.com`.
-- **Nothing to pay or configure.** The MCP server's optional customer tools need a customer key
-  in the server's environment; these plugins do not ask for one or read it.
+| Part | What it is | What it sends |
+| --- | --- | --- |
+| Skill | Instructions only, no code | The agent sends the project facts to LienDeadline's public API. No account or key; the API does not save them. |
+| MCP server (plugins only) | [`liendeadline-mcp`](https://github.com/LienDeadline/liendeadline-mcp), started locally with `npx -y liendeadline-mcp@0.2.0` | The same facts, to `secure-api-v1.liendeadline.com` only. No telemetry. |
 
-LienDeadline's [privacy policy](https://liendeadline.com/privacy) covers the API.
+Nothing to pay for or configure. See LienDeadline's [privacy policy](https://liendeadline.com/privacy).
 
 ## Layout
 
