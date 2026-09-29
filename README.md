@@ -7,14 +7,14 @@ preliminary notice deadlines for US construction material suppliers.
 
 | Skill | What it does |
 | --- | --- |
-| [`liendeadline`](skills/liendeadline/SKILL.md) | Asks the user for the project's delivery facts, calculates the preliminary notice and lien filing deadlines with LienDeadline, and explains the result with its statute sources. |
+| [`liendeadline`](skills/liendeadline/SKILL.md) | Asks for delivery facts and explicit Florida or Kansas event answers, calls the public supplier-events-v2 API through direct HTTPS, and explains each result with its statute sources. |
 
 ## Coverage
 
 - **Lien guides:** all 50 states and DC.
 - **Calculated supplier deadlines:** Florida and Kansas private projects, the states whose supplier
   rules have been reviewed so far. For other states, public projects, or when unusual
-  project events have not been ruled out, the answer is "needs legal review" instead of a
+  project events are unknown, the affected deadline needs qualified review instead of a
   guessed date.
 
 Results are not legal advice.
@@ -56,10 +56,10 @@ Codex reads the same marketplace with `codex plugin marketplace add LienDeadline
 
 | Part | What it is | What it sends |
 | --- | --- | --- |
-| Skill | Instructions only, no code | The agent sends the project facts to LienDeadline's public API. No account or key; the API does not save them. |
-| MCP server (plugins only) | [`liendeadline-mcp`](https://github.com/LienDeadline/liendeadline-mcp), started locally with `npx -y liendeadline-mcp@0.2.0` | The same facts, to `secure-api-v1.liendeadline.com` only. No telemetry. |
+| Skill | Instructions only, no code | An authorized direct HTTPS tool sends the project facts to LienDeadline's public supplier-events-v2 API. No account or key; the API does not save them. |
+| MCP server (plugin manifests) | [`liendeadline-mcp`](https://github.com/LienDeadline/liendeadline-mcp) is pinned at v0.2.0, which sends supplier-events-v1. | Do not use its supplier calculation tool for deadline dates until a v2 artifact is verified. Its state guides remain editorial references. |
 
-Nothing to pay for or configure. See LienDeadline's [privacy policy](https://liendeadline.com/privacy).
+The public supplier endpoint needs no key. See LienDeadline's [privacy policy](https://liendeadline.com/privacy).
 
 ## Layout
 
