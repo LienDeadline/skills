@@ -1,5 +1,7 @@
 # LienDeadline agent skills
 
+[![skills.sh](https://skills.sh/b/liendeadline/skills)](https://skills.sh/liendeadline/skills)
+
 Agent skills and plugins for [LienDeadline](https://liendeadline.com): mechanics lien and
 preliminary notice deadlines for US construction material suppliers.
 
