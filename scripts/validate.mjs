@@ -1,6 +1,7 @@
 // Offline checks for the rules that skill directories and plugin reviewers enforce.
 // Usage: node scripts/validate.mjs
 import { existsSync, readdirSync, readFileSync, statSync } from "node:fs";
+import { spawnSync } from "node:child_process";
 import { join, relative, resolve } from "node:path";
 
 const root = resolve(import.meta.dirname, "..");
@@ -134,6 +135,14 @@ check(pins.size <= 1, `MCP pins differ between manifests: ${[...pins].join(", ")
 const prose = readFileSync(join(root, "README.md"), "utf8").replace(/```[\s\S]*?```/g, "");
 check(prose.split(/\s+/).filter(Boolean).length >= 40, "README.md needs at least 40 words outside code blocks");
 check(existsSync(join(root, "LICENSE")), "LICENSE is missing");
+
+const supplierContractTest = spawnSync(
+  process.execPath, ["--test", join(root, "scripts", "supplier-v2-contract.test.mjs")],
+  { encoding: "utf8" },
+);
+if (supplierContractTest.status !== 0) {
+  errors.push("supplier-events-v2 synthetic contract examples failed:\n" + supplierContractTest.stdout + supplierContractTest.stderr);
+}
 
 if (errors.length) {
   console.error(errors.map((e) => `- ${e}`).join("\n"));

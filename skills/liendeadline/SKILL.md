@@ -41,3 +41,53 @@ Send only fields backed by facts. The API rejects explicit `null` values and the
 - Top-level `status` is `review_required` when either deadline needs review. A lien date awaiting final delivery can coexist with a calculated notice date; read each deadline's status independently.
 - Present `critical_warnings`, `statute_citations`, each `source_url` and the `disclaimer` alongside the dates. Dates are statutory calendar-date baselines; no county recording cutoff or weekend/holiday extension is assumed.
 - A `422` response means validation failed: correct the named field from facts rather than guessing. Never fill a failed or `review_required` result with dates from a state guide or from memory.
+
+## Same-facts examples (synthetic)
+
+These examples share one set of made-up delivery facts. The event answers alone change which deadline needs review. Expand `shared_facts` with each case's `state` and `answers` before posting; never copy the example's facts into a real request. The expected statuses are source-derived checks, not serving acceptance or dates to report. Use only a verified API response for actual dates.
+
+```json
+{
+  "shared_facts": {
+    "contract_version": "supplier-events-v2",
+    "role": "supplier",
+    "first_delivery_date": "2026-06-01",
+    "last_delivery_date": "2026-08-14",
+    "project_type": "commercial",
+    "hired_by": "contractor",
+    "deliveries_complete": true
+  },
+  "cases": [
+    {
+      "id": "fl_known_no", "state": "FL",
+      "answers": { "florida_final_payment_status": "no", "florida_termination_status": "no" },
+      "expected": { "status": "calculated", "preliminary_notice": { "status": "calculated" }, "lien_filing": { "status": "calculated" } }
+    },
+    {
+      "id": "fl_payment_unknown", "state": "FL",
+      "answers": { "florida_final_payment_status": "unknown", "florida_termination_status": "no" },
+      "expected": { "status": "review_required", "preliminary_notice": { "status": "review_required", "deadline": null }, "lien_filing": { "status": "calculated" } }
+    },
+    {
+      "id": "fl_termination_yes", "state": "FL",
+      "answers": { "florida_final_payment_status": "no", "florida_termination_status": "yes" },
+      "expected": { "status": "review_required", "preliminary_notice": { "status": "calculated" }, "lien_filing": { "status": "review_required", "deadline": null } }
+    },
+    {
+      "id": "ks_known_no", "state": "KS",
+      "answers": { "kansas_extension_status": "no" },
+      "expected": { "status": "calculated", "preliminary_notice": { "status": "not_required", "deadline": null }, "lien_filing": { "status": "calculated" } }
+    },
+    {
+      "id": "ks_extension_unknown", "state": "KS",
+      "answers": { "kansas_extension_status": "unknown" },
+      "expected": { "status": "review_required", "preliminary_notice": { "status": "not_required", "deadline": null }, "lien_filing": { "status": "review_required", "deadline": null } }
+    },
+    {
+      "id": "ks_extension_yes", "state": "KS",
+      "answers": { "kansas_extension_status": "yes" },
+      "expected": { "status": "review_required", "preliminary_notice": { "status": "not_required", "deadline": null }, "lien_filing": { "status": "review_required", "deadline": null } }
+    }
+  ]
+}
+```
