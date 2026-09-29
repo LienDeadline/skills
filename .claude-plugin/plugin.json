@@ -9,6 +9,6 @@
   "license": "MIT",
   "keywords": ["mechanics-lien", "preliminary-notice", "notice-to-owner", "construction", "lien-deadlines", "mcp"],
   "mcpServers": {
-    "liendeadline": { "command": "npx", "args": ["-y", "liendeadline-mcp@0.3.0"] }
+    "liendeadline": { "command": "npx", "args": ["-y", "liendeadline-mcp@0.3.1"] }
   }
 }

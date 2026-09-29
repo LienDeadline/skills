@@ -57,7 +57,7 @@ Codex reads the same marketplace with `codex plugin marketplace add LienDeadline
 | Part | What it is | What it sends |
 | --- | --- | --- |
 | Skill | Instructions only, no code | The agent sends the project facts and event answers to LienDeadline's public supplier-events-v2 API, through the MCP server or a direct HTTPS tool. No account or key; the API does not save them. |
-| MCP server (plugin manifests) | [`liendeadline-mcp`](https://github.com/LienDeadline/liendeadline-mcp), started locally with `npx -y liendeadline-mcp@0.3.0`. It sends supplier-events-v2 with the explicit event answers. | The same facts and answers, to `secure-api-v1.liendeadline.com` only. No telemetry. Its state guides are editorial references. |
+| MCP server (plugin manifests) | [`liendeadline-mcp`](https://github.com/LienDeadline/liendeadline-mcp), started locally with `npx -y liendeadline-mcp@0.3.1`. It sends supplier-events-v2 with the explicit event answers, and its published `npm-shrinkwrap.json` locks every dependency version. | The same facts and answers, to `secure-api-v1.liendeadline.com` only. No telemetry. Its state guides are editorial references. |
 
 The public supplier endpoint needs no key, and the plugins configure none. See LienDeadline's [privacy policy](https://liendeadline.com/privacy).
 
