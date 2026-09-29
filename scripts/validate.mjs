@@ -1,6 +1,7 @@
 // Offline checks for the rules that skill directories and plugin reviewers enforce.
 // Usage: node scripts/validate.mjs
 import { existsSync, readdirSync, readFileSync, statSync } from "node:fs";
+import { spawnSync } from "node:child_process";
 import { join, relative, resolve } from "node:path";
 
 const root = resolve(import.meta.dirname, "..");
@@ -42,6 +43,38 @@ for (const dir of skillDirs) {
   check(compatibility === undefined || compatibility.length <= 500, `${where}: compatibility exceeds 500 characters`);
   check(text.split("\n").length <= 500, `${where}: keep SKILL.md under 500 lines`);
 }
+
+// The public skill is an API consumer. Keep its field table aligned with the
+// serving supplier-events-v2 contract, including facts that block one deadline.
+const supplierSkill = readFileSync(join(skillsDir, "liendeadline", "SKILL.md"), "utf8");
+const requestTable = supplierSkill.split("## Request fields (`supplier-events-v2`)")[1]?.split("\n## ")[0] ?? "";
+const requestRows = new Map(
+  [...requestTable.matchAll(/^\| `([a-z_]+)` \|([^\n]*)$/gm)].map(([, field, details]) => [field, details]),
+);
+check(requestTable.length > 0, "liendeadline skill must document the supplier-events-v2 request");
+check((requestRows.get("contract_version") ?? "").includes('"supplier-events-v2"'),
+  "liendeadline skill must send supplier-events-v2, not a v1 request");
+for (const field of [
+  "contract_version", "state", "first_delivery_date", "last_delivery_date",
+  "project_type", "hired_by", "deliveries_complete", "florida_final_payment_status",
+  "florida_termination_status", "kansas_extension_status",
+]) {
+  check(requestRows.has(field), `liendeadline skill is missing the v2 ${field} request field`);
+}
+check(!requestRows.has("special_events_reviewed"), "liendeadline skill must not send the v1 blanket review flag");
+for (const field of ["florida_final_payment_status", "florida_termination_status", "kansas_extension_status"]) {
+  const details = requestRows.get(field) ?? "";
+  check(["yes", "no", "unknown"].every((answer) => details.includes(`\`${answer}\``)),
+    `${field} must document yes/no/unknown answers`);
+  check(/unknown|omitted/.test(details) && /review_required/.test(details),
+    `${field} must keep unknown facts review-required`);
+}
+for (const field of ["florida_final_payment_date", "florida_termination_date"]) {
+  check(/matching `yes`/.test(requestRows.get(field) ?? ""), `${field} needs a matching yes answer`);
+}
+check(/direct HTTP/i.test(supplierSkill) && /MCP.*v1|v1.*MCP/.test(supplierSkill) &&
+    /do not use it for deadline dates until a v2 MCP artifact is verified/i.test(supplierSkill),
+  "liendeadline skill must use direct HTTP v2 and exclude the pinned MCP v1 tool from deadline dates");
 
 // Layout rules: a root SKILL.md hides every other skill from the skills CLI; claude.ai refuses a
 // top-level bin/; directory reviews reject .DS_Store files.
@@ -102,6 +135,14 @@ check(pins.size <= 1, `MCP pins differ between manifests: ${[...pins].join(", ")
 const prose = readFileSync(join(root, "README.md"), "utf8").replace(/```[\s\S]*?```/g, "");
 check(prose.split(/\s+/).filter(Boolean).length >= 40, "README.md needs at least 40 words outside code blocks");
 check(existsSync(join(root, "LICENSE")), "LICENSE is missing");
+
+const supplierContractTest = spawnSync(
+  process.execPath, ["--test", join(root, "scripts", "supplier-v2-contract.test.mjs")],
+  { encoding: "utf8" },
+);
+if (supplierContractTest.status !== 0) {
+  errors.push("supplier-events-v2 synthetic contract examples failed:\n" + supplierContractTest.stdout + supplierContractTest.stderr);
+}
 
 if (errors.length) {
   console.error(errors.map((e) => `- ${e}`).join("\n"));
