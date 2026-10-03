@@ -1,6 +1,6 @@
 ---
 name: liendeadline
-description: Mechanics lien and preliminary notice deadlines for US construction material suppliers, from LienDeadline's public supplier-events API. Use when someone asks when a supplier must serve a preliminary notice or Notice to Owner, or record a mechanics lien or claim of lien, based on delivery dates. Reviewed baselines cover Florida and Kansas private projects; other states, public projects and unresolved events return review-required results.
+description: Use this skill when a US construction material supplier asks about preliminary notice or mechanics lien deadlines, for example "when is my Notice to Owner due?", "can I still file a lien?" or "how long after my last delivery can I record a claim of lien?" It asks for delivery dates, project facts and Florida or Kansas event answers, then gets statutory deadline baselines from LienDeadline's public supplier-events API through the LienDeadline MCP server or direct HTTPS. Reviewed baselines cover Florida and Kansas private projects; other states, public projects and unresolved events return review-required results.
 license: MIT
 compatibility: Deadline calculations need outbound HTTPS to secure-api-v1.liendeadline.com, or a LienDeadline MCP server (0.3.0 or later) whose calculator accepts the event answers.
 ---

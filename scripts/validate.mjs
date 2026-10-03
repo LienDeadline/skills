@@ -97,11 +97,16 @@ const marketplace = readJson(".claude-plugin/marketplace.json");
 const agentPlugin = readJson("plugin.json");
 const agentMcp = readJson("mcp.json");
 const gemini = readJson("gemini-extension.json");
+const codexPlugin = readJson(".codex-plugin/plugin.json");
+const cursorPlugin = readJson(".cursor-plugin/plugin.json");
 
 const pluginName = claudePlugin.name;
 const version = claudePlugin.version;
 check(NAME.test(pluginName), `plugin name "${pluginName}" must be lowercase kebab-case`);
-for (const [file, manifest] of [["plugin.json", agentPlugin], ["gemini-extension.json", gemini]]) {
+for (const [file, manifest] of [
+  ["plugin.json", agentPlugin], ["gemini-extension.json", gemini],
+  [".codex-plugin/plugin.json", codexPlugin], [".cursor-plugin/plugin.json", cursorPlugin],
+]) {
   check(manifest.name === pluginName, `${file}: name must be "${pluginName}"`);
   check(manifest.version === version, `${file}: version ${manifest.version} must equal ${version}`);
 }
@@ -131,6 +136,9 @@ for (const [file, server] of [
   if (pin) pins.add(pin);
 }
 check(agentMcp.mcpServers?.liendeadline?.type === "stdio", "mcp.json: server type must be stdio");
+for (const [file, manifest] of [[".codex-plugin/plugin.json", codexPlugin], [".cursor-plugin/plugin.json", cursorPlugin]]) {
+  check(manifest.mcpServers === "./mcp.json", `${file}: mcpServers must be "./mcp.json", which holds the pin`);
+}
 const pinList = Array.from(pins).join(", ");
 check(pins.size <= 1, `MCP pins differ between manifests: ${pinList}`);
 // The skill routes deadline dates to this pin, and releases before 0.3.0 send supplier-events-v1.
@@ -144,6 +152,53 @@ const icon = existsSync(join(root, ".claude-plugin/icon.svg")) ? readFileSync(jo
 const [, iconWidth, iconHeight] = /<svg[^>]*\bwidth="(\d+)"[^>]*\bheight="(\d+)"/.exec(icon) ?? [];
 check(icon.startsWith("<svg") && iconWidth === iconHeight && Number(iconWidth) >= 128,
   ".claude-plugin/icon.svg must be a square SVG of at least 128 x 128 px");
+
+// Codex takes the plugin from plugin.json and mcp.json and its listing from the
+// .codex-plugin/plugin.json overlay, which older Codex releases read in their place. A wrongly
+// typed overlay field disables the whole plugin, and Codex ignores paths that do not start with
+// "./" or that leave the repository.
+for (const [field, path] of Object.entries({
+  skills: codexPlugin.skills,
+  "interface.composerIcon": codexPlugin.interface?.composerIcon,
+  "interface.logo": codexPlugin.interface?.logo,
+})) {
+  check(typeof path === "string" && path.startsWith("./") && !path.includes("..") && existsSync(join(root, path)),
+    `.codex-plugin/plugin.json: ${field} must be an existing "./" path inside the repository`);
+}
+for (const [field, value] of Object.entries(codexPlugin.interface ?? {})) {
+  const isList = ["defaultPrompt", "capabilities", "screenshots"].includes(field);
+  check(isList ? Array.isArray(value) && value.every((item) => typeof item === "string") : typeof value === "string",
+    `.codex-plugin/plugin.json: interface.${field} must be ${isList ? "a list of strings" : "a string"}`);
+}
+const prompts = Array.isArray(codexPlugin.interface?.defaultPrompt) ? codexPlugin.interface.defaultPrompt : [];
+check(prompts.length <= 3 && prompts.every((prompt) => prompt.length <= 128),
+  ".codex-plugin/plugin.json: Codex keeps at most 3 default prompts of at most 128 characters");
+
+// Codex shows a skill's agents/openai.yaml icons only from that skill's own assets/ folder, so
+// the icon there stays a byte-for-byte copy of .claude-plugin/icon.svg.
+const openaiYamlPath = join(skillsDir, "liendeadline", "agents", "openai.yaml");
+const openaiYaml = existsSync(openaiYamlPath) ? readFileSync(openaiYamlPath, "utf8") : "";
+check(/^\s+display_name: \S/m.test(openaiYaml) && /^\s+short_description: \S/m.test(openaiYaml),
+  "skills/liendeadline/agents/openai.yaml needs interface.display_name and short_description");
+for (const [, field, path] of openaiYaml.matchAll(/^\s+(icon_small|icon_large): "?(.*?)"?$/gm)) {
+  const copy = join(skillsDir, "liendeadline", path);
+  check(/^(\.\/)?assets\//.test(path) && !path.includes("..") && existsSync(copy) && readFileSync(copy, "utf8") === icon,
+    `openai.yaml: ${field} must point at a copy of .claude-plugin/icon.svg in the skill's assets/ folder`);
+}
+
+// Cursor reads .cursor-plugin/plugin.json and silently falls back to .claude-plugin/plugin.json
+// when it is invalid. Cursor's plugin schema allows only these fields, and only a name and an
+// email for the author.
+const CURSOR_FIELDS = [
+  "name", "displayName", "description", "version", "minClientVersions", "author", "publisher", "homepage", "repository",
+  "license", "logo", "keywords", "category", "tags", "commands", "agents", "skills", "rules", "hooks", "variables", "mcpServers",
+];
+for (const field of Object.keys(cursorPlugin)) check(CURSOR_FIELDS.includes(field), `.cursor-plugin/plugin.json: "${field}" is not in Cursor's plugin schema`);
+for (const field of Object.keys(cursorPlugin.author ?? {})) check(["name", "email"].includes(field), `.cursor-plugin/plugin.json: author.${field} is not in Cursor's plugin schema`);
+for (const field of ["homepage", "repository"]) check(/^https:\/\/\S+$/.test(cursorPlugin[field] ?? ""), `.cursor-plugin/plugin.json: ${field} must be a URL`);
+const cursorLogo = cursorPlugin.logo ?? "";
+check(cursorLogo !== "" && !cursorLogo.startsWith("/") && !cursorLogo.includes("..") && existsSync(join(root, cursorLogo)),
+  ".cursor-plugin/plugin.json: logo must be an existing path inside the repository");
 
 // Anthropic's directory needs at least 40 words of README prose (code blocks excluded).
 const prose = readFileSync(join(root, "README.md"), "utf8").replace(/```[\s\S]*?```/g, "");

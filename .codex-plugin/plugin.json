@@ -1,0 +1,26 @@
+{
+  "name": "liendeadline",
+  "version": "1.1.0",
+  "description": "Mechanics lien and preliminary notice deadline baselines for US construction material suppliers: the LienDeadline agent skill plus the LienDeadline MCP server.",
+  "author": { "name": "LienDeadline", "url": "https://liendeadline.com" },
+  "homepage": "https://liendeadline.com",
+  "repository": "https://github.com/LienDeadline/skills",
+  "license": "MIT",
+  "keywords": ["mechanics-lien", "preliminary-notice", "notice-to-owner", "construction", "lien-deadlines", "mcp"],
+  "skills": "./skills/",
+  "mcpServers": "./mcp.json",
+  "interface": {
+    "displayName": "LienDeadline",
+    "shortDescription": "Lien and notice deadlines",
+    "longDescription": "Mechanics lien and preliminary notice deadline baselines for US construction material suppliers: the LienDeadline agent skill plus the LienDeadline MCP server. When a deadline needs qualified review, the result says so instead of guessing a date. Not legal advice.",
+    "developerName": "LienDeadline",
+    "category": "Productivity",
+    "websiteURL": "https://liendeadline.com",
+    "privacyPolicyURL": "https://liendeadline.com/privacy",
+    "termsOfServiceURL": "https://liendeadline.com/terms",
+    "defaultPrompt": ["When is my Notice to Owner due on a Florida job?", "Can I still file a lien for my last delivery in Kansas?"],
+    "brandColor": "#205E4E",
+    "composerIcon": "./.claude-plugin/icon.svg",
+    "logo": "./.claude-plugin/icon.svg"
+  }
+}
