@@ -91,7 +91,8 @@ check(!existsSync(join(root, "bin")), "remove the top-level bin/ directory");
   }
 })(root);
 
-// Manifests: one plugin name and version everywhere, and one exactly pinned MCP server release.
+// Manifests: one plugin name and version everywhere. Claude's plugin uses the hosted MCP server; the other
+// manifests pin one exact release of liendeadline-mcp.
 const claudePlugin = readJson(".claude-plugin/plugin.json");
 const marketplace = readJson(".claude-plugin/marketplace.json");
 const agentPlugin = readJson("plugin.json");
@@ -122,10 +123,21 @@ for (const field of Object.keys(agentPlugin)) check(agentPluginFields.includes(f
 check(agentMcp.$schema === "https://agent-plugins.org/schemas/1.0.0/mcp.schema.json", "mcp.json: unexpected $schema");
 for (const field of Object.keys(agentMcp)) check(["$schema", "mcpServers"].includes(field), `mcp.json: "${field}" is not allowed`);
 
+// Claude's plugin connects to the hosted endpoint, which works in Claude Code, Cowork and the Claude
+// apps. Claude's directory holds every version that runs an npx package for manual review.
+const HOSTED = "https://mcp.liendeadline.com/mcp";
+const claudeServer = claudePlugin.mcpServers?.liendeadline ?? {};
+check(claudeServer.type === "http" && claudeServer.url === HOSTED && Object.keys(claudeServer).length === 2,
+  `.claude-plugin/plugin.json: the liendeadline server must be exactly { "type": "http", "url": "${HOSTED}" }`);
+// Anthropic's directory reads these listing fields from plugin.json; Claude Code ignores them.
+for (const field of ["documentationUrl", "supportUrl", "privacyPolicyUrl", "termsOfServiceUrl"]) {
+  check(/^https:\/\/\S+$/.test(claudePlugin[field] ?? ""), `.claude-plugin/plugin.json: ${field} must be an https:// URL`);
+}
+
+// The Agent Plugins and Gemini manifests start the server locally, pinned to one exact release.
 const PIN = /^liendeadline-mcp@\d+\.\d+\.\d+$/;
 const pins = new Set();
 for (const [file, server] of [
-  [".claude-plugin/plugin.json", claudePlugin.mcpServers?.liendeadline],
   ["mcp.json", agentMcp.mcpServers?.liendeadline],
   ["gemini-extension.json", gemini.mcpServers?.liendeadline],
 ]) {
