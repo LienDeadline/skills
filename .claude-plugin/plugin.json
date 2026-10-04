@@ -1,7 +1,7 @@
 {
   "name": "liendeadline",
   "displayName": "LienDeadline",
-  "version": "1.2.1",
+  "version": "1.2.2",
   "description": "Mechanics lien and preliminary notice deadline baselines for US construction material suppliers: the LienDeadline agent skill plus the LienDeadline MCP server.",
   "author": { "name": "LienDeadline", "url": "https://liendeadline.com" },
   "homepage": "https://liendeadline.com",
@@ -9,6 +9,6 @@
   "license": "MIT",
   "keywords": ["mechanics-lien", "preliminary-notice", "notice-to-owner", "construction", "lien-deadlines", "mcp"],
   "mcpServers": {
-    "liendeadline": { "command": "npx", "args": ["-y", "liendeadline-mcp@0.4.0"] }
+    "liendeadline": { "command": "npx", "args": ["-y", "liendeadline-mcp@0.4.1"] }
   }
 }
