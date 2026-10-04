@@ -50,7 +50,12 @@ GitHub CLI:
 gh skill install LienDeadline/skills liendeadline
 ```
 
-Codex reads the same marketplace with `codex plugin marketplace add LienDeadline/skills`.
+Codex plugin (skill and MCP server):
+
+```bash
+codex plugin marketplace add LienDeadline/skills
+codex plugin add liendeadline@liendeadline
+```
 
 ## What runs and what is sent
 
@@ -69,12 +74,22 @@ skill still works through a direct HTTPS tool. `scripts/` holds developer checks
 | Path | Used by |
 | --- | --- |
 | `skills/liendeadline/SKILL.md` | Every agent; follows the Agent Skills specification |
-| `.claude-plugin/plugin.json`, `.claude-plugin/marketplace.json` | Claude Code, Codex, Copilot CLI |
-| `plugin.json`, `mcp.json` | Agent Plugins 1.0.0 clients |
+| `skills/liendeadline/agents/openai.yaml` | Codex: the skill's display name and icon. Codex reads skill icons only from the skill folder, so `assets/icon.svg` there is a copy of `.claude-plugin/icon.svg`. |
+| `.claude-plugin/plugin.json` | Claude Code, Copilot CLI |
+| `.claude-plugin/marketplace.json` | Claude Code, Codex, Copilot CLI |
+| `.claude-plugin/icon.svg` | The plugin icon in Claude's plugin directory, Codex and Cursor |
+| `plugin.json`, `mcp.json` | Agent Plugins 1.0.0 clients, including Codex. The Codex and Cursor manifests reuse `mcp.json`. |
+| `.codex-plugin/plugin.json` | Codex: the plugin's name, icon and links. Older Codex releases read it instead of `plugin.json`. |
+| `.cursor-plugin/plugin.json` | Cursor |
 | `gemini-extension.json` | Gemini CLI |
 
 The same `SKILL.md` is served at https://liendeadline.com/skills/liendeadline/SKILL.md. Run
 `node scripts/validate.mjs` before committing; CI runs it on every change.
+
+## Support
+
+Questions and bug reports: [support@liendeadline.com](mailto:support@liendeadline.com) or an issue
+in this repository. Report security issues privately as described in [SECURITY.md](SECURITY.md).
 
 ## Not legal advice
 
