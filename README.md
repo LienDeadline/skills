@@ -28,7 +28,7 @@ CLI, GitHub Copilot and others), with the [skills CLI](https://skills.sh):
 npx skills add LienDeadline/skills
 ```
 
-Claude Code plugin, which adds the skill and the LienDeadline MCP server:
+Claude Code plugin, which adds the skill and connects to the hosted LienDeadline MCP server:
 
 ```bash
 claude plugin marketplace add LienDeadline/skills
@@ -62,13 +62,15 @@ codex plugin add liendeadline@liendeadline
 | Part | What it is | What it sends |
 | --- | --- | --- |
 | Skill | Instructions only, no code | The agent sends the project facts and event answers to LienDeadline's public supplier-events-v2 API, through the MCP server or a direct HTTPS tool. No account or key; the API does not save them. |
-| MCP server (plugin manifests) | [`liendeadline-mcp`](https://github.com/LienDeadline/liendeadline-mcp), started locally with `npx -y liendeadline-mcp@0.4.1`. It sends supplier-events-v2 with the explicit event answers, and its published `npm-shrinkwrap.json` locks every dependency version. | The same facts and answers, to `secure-api-v1.liendeadline.com` only. No telemetry. Its state guides are editorial references. |
+| MCP server (Claude plugin) | The hosted endpoint `https://mcp.liendeadline.com/mcp`, the same server as LienDeadline's [Claude connector](https://claude.ai/directory/connectors/liendeadline). Nothing is installed or run locally. | The facts and answers go to that endpoint, which forwards them to `secure-api-v1.liendeadline.com` and stores nothing between requests. Its state guides are editorial references. |
+| MCP server (Codex, Cursor and Gemini manifests) | [`liendeadline-mcp`](https://github.com/LienDeadline/liendeadline-mcp), started locally with `npx -y liendeadline-mcp@0.4.1`. It sends supplier-events-v2 with the explicit event answers, and its published `npm-shrinkwrap.json` locks every dependency version. | The same facts and answers, to `secure-api-v1.liendeadline.com` only. No telemetry. |
 
 The public supplier endpoint needs no key, and the plugins configure none. See LienDeadline's [privacy policy](https://liendeadline.com/privacy).
 
-The plugins start the MCP server locally over stdio, which works in Claude Code and Cowork. On claude.ai, add the hosted
-endpoint `https://mcp.liendeadline.com/mcp` as a custom connector instead; it serves the same public tools. The skill
-also works through a direct HTTPS tool. `scripts/` holds developer checks that CI runs; the plugin never runs them.
+The Claude plugin uses the hosted endpoint, so it works in Claude Code, Cowork and the Claude apps. The Codex, Cursor and
+Gemini manifests start the server locally over stdio. Elsewhere, add `https://mcp.liendeadline.com/mcp` as a custom
+connector, or let the skill use a direct HTTPS tool. `scripts/` holds developer checks that CI runs; the plugin never
+runs them.
 
 ## Layout
 
