@@ -11,11 +11,14 @@ preliminary notice deadlines for US construction material suppliers.
 
 ## Coverage
 
-- **Lien guides:** all 50 states and DC.
-- **Calculated supplier deadlines:** Florida and Kansas private projects, the states whose supplier
-  rules have been reviewed so far. For other states, public projects, or when unusual
-  project events are unknown, the affected deadline needs qualified review instead of a
-  guessed date.
+1. **Lien guides:** all 50 states and DC.
+2. **Available supplier calculations:** Florida and Kansas private projects through
+   `supplier-events-v2`. Other states and public projects return `review_required`.
+   Missing or unresolved event facts keep the affected deadline under review.
+3. **Research progress:** as of October 6, 2026, the [human-review tracker](https://github.com/LienDeadline/liendeadline-api/issues/327)
+   accepts Peter's conditional decisions for 19 jurisdictions across all six private supplier
+   scopes. This research count includes Florida and Kansas and DC; it is not a count of
+   available calculations. Additional coverage requires implemented rules and release acceptance.
 
 Results are not legal advice.
 
@@ -107,3 +110,16 @@ before relying on them. LienDeadline is not a law firm and does not file anythin
 ## License
 
 MIT
+
+The skill also supports the additive supplier-events-v3 discovery interface when the connected server exposes it. It discovers exact scope support and questions before collecting facts, binds calculations to returned source identities, and preserves review-required outcomes. This client capability does not claim that additional jurisdictions are live.
+
+
+## Pending release candidate
+
+Plugin metadata is prepared for 1.4.0. The Codex, Cursor and Gemini package pins remain
+`liendeadline-mcp@0.4.2`, the existing published package. MCP 0.5.0 adds the v3 discovery and
+calculation tools; update those pins only after 0.5.0 is published and verified, following
+[the MCP release procedure](https://github.com/LienDeadline/liendeadline-mcp/blob/main/RELEASING.md).
+Hosted MCP deployment is separate from package publication. The skill discovers available
+tools and uses the v3 interface only when available; this candidate does not claim additional
+live jurisdictions or a completed publication.

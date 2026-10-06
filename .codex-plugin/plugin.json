@@ -1,7 +1,7 @@
 {
   "name": "liendeadline",
-  "version": "1.3.1",
-  "description": "Mechanics lien and preliminary notice deadline baselines for US construction material suppliers: the LienDeadline agent skill plus the LienDeadline MCP server.",
+  "version": "1.4.0",
+  "description": "Supplier notice and mechanics lien deadline baselines for Florida and Kansas private projects, plus statute-cited guides for all 50 states and DC. Other supplier calculations require review.",
   "author": { "name": "LienDeadline", "url": "https://liendeadline.com" },
   "homepage": "https://liendeadline.com",
   "repository": "https://github.com/LienDeadline/skills",
@@ -12,7 +12,7 @@
   "interface": {
     "displayName": "LienDeadline",
     "shortDescription": "Lien and notice deadlines",
-    "longDescription": "Mechanics lien and preliminary notice deadline baselines for US construction material suppliers: the LienDeadline agent skill plus the LienDeadline MCP server. When a deadline needs qualified review, the result says so instead of guessing a date. Not legal advice.",
+    "longDescription": "Supplier notice and mechanics lien deadline baselines for Florida and Kansas private projects, plus statute-cited guides for all 50 states and DC. Other supplier calculations require review. The skill collects delivery facts and explicit event answers, and reports only dates returned by the API. Research approvals do not establish additional calculation coverage. Not legal advice.",
     "developerName": "LienDeadline",
     "category": "Productivity",
     "websiteURL": "https://liendeadline.com",
