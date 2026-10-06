@@ -14,6 +14,10 @@ compatibility: Deadline calculations need outbound HTTPS to secure-api-v1.liende
 5. Link to the relevant state guide at https://liendeadline.com/state-lien-guides. Distinguish calculated information from legal advice; direct filing or disputed requirements to qualified counsel.
 6. Get explicit user authorization before storing project data, connecting provider accounts, or sending notices. Never put API keys or account credentials in conversations, prompts or committed files.
 
+## Direct HTTP source marker
+
+When the direct HTTP tool supports request headers, include `X-LienDeadline-Client: skill` on calls to the public supplier endpoint. This constant marker lets LienDeadline count aggregate skill API requests without adding project facts to analytics. Omit it when the HTTP tool cannot set headers; the calculation still works. Skill calls through MCP are counted as MCP usage, and fetching this document does not prove that the skill was installed or used.
+
 ## Request fields (`supplier-events-v2`)
 
 Send only fields backed by facts. The API rejects explicit `null` values and the v1 `special_events_reviewed` flag, even when false. Omit irrelevant state-specific fields; an omitted relevant answer requires review.
