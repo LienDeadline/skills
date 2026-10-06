@@ -63,9 +63,14 @@ codex plugin add liendeadline@liendeadline
 | --- | --- | --- |
 | Skill | Instructions only, no code | The agent sends the project facts and event answers to LienDeadline's public supplier-events-v2 API, through the MCP server or a direct HTTPS tool. No account or key; the API does not save them. |
 | MCP server (Claude plugin) | The hosted endpoint `https://mcp.liendeadline.com/mcp`, the same server as LienDeadline's [Claude connector](https://claude.ai/directory/connectors/liendeadline). Nothing is installed or run locally. | The facts and answers go to that endpoint, which forwards them to `secure-api-v1.liendeadline.com` and stores nothing between requests. Its state guides are editorial references. |
-| MCP server (Codex, Cursor and Gemini manifests) | [`liendeadline-mcp`](https://github.com/LienDeadline/liendeadline-mcp), started locally with `npx -y liendeadline-mcp@0.4.1`. It sends supplier-events-v2 with the explicit event answers, and its published `npm-shrinkwrap.json` locks every dependency version. | The same facts and answers, to `secure-api-v1.liendeadline.com` only. No telemetry. |
+| MCP server (Codex, Cursor and Gemini manifests) | [`liendeadline-mcp`](https://github.com/LienDeadline/liendeadline-mcp), started locally with `npx -y liendeadline-mcp@0.4.2`. It sends supplier-events-v2 with the explicit event answers, and its published `npm-shrinkwrap.json` locks every dependency version. | The same facts and answers, to `secure-api-v1.liendeadline.com` only. No direct telemetry from the local MCP process; the API may count request metadata as described below. |
 
 The public supplier endpoint needs no key, and the plugins configure none. See LienDeadline's [privacy policy](https://liendeadline.com/privacy).
+
+The hosted connector and API may collect aggregate usage through PostHog: operation or tool name,
+outcome and duration, without project inputs, outputs, IP addresses or account credentials.
+The direct HTTP skill path supplies a constant `X-LienDeadline-Client: skill` marker when supported.
+Calls through MCP count as MCP use. Fetching the skill document does not prove installation or use.
 
 The Claude plugin uses the hosted endpoint, so it works in Claude Code, Cowork and the Claude apps. The Codex, Cursor and
 Gemini manifests start the server locally over stdio. Elsewhere, add `https://mcp.liendeadline.com/mcp` as a custom
