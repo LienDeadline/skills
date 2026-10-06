@@ -66,7 +66,7 @@ codex plugin add liendeadline@liendeadline
 | --- | --- | --- |
 | Skill | Instructions only, no code | The agent sends the project facts and event answers to LienDeadline's public supplier-events-v2 API, through the MCP server or a direct HTTPS tool. No account or key; the API does not save them. |
 | MCP server (Claude plugin) | The hosted endpoint `https://mcp.liendeadline.com/mcp`, the same server as LienDeadline's [Claude connector](https://claude.ai/directory/connectors/liendeadline). Nothing is installed or run locally. | The facts and answers go to that endpoint, which forwards them to `secure-api-v1.liendeadline.com` and stores nothing between requests. Its state guides are editorial references. |
-| MCP server (Codex, Cursor and Gemini manifests) | [`liendeadline-mcp`](https://github.com/LienDeadline/liendeadline-mcp), started locally with `npx -y liendeadline-mcp@0.4.2`. It sends supplier-events-v2 with the explicit event answers, and its published `npm-shrinkwrap.json` locks every dependency version. | The same facts and answers, to `secure-api-v1.liendeadline.com` only. No direct telemetry from the local MCP process; the API may count request metadata as described below. |
+| MCP server (Codex, Cursor and Gemini manifests) | [`liendeadline-mcp`](https://github.com/LienDeadline/liendeadline-mcp), started locally with `npx -y liendeadline-mcp@0.5.0`. It sends supplier-events-v2 with the explicit event answers and exposes supplier-events-v3 discovery and calculation tools. Its published `npm-shrinkwrap.json` locks every dependency version. | The same facts and answers, to `secure-api-v1.liendeadline.com` only. No direct telemetry from the local MCP process; the API may count request metadata as described below. |
 
 The public supplier endpoint needs no key, and the plugins configure none. See LienDeadline's [privacy policy](https://liendeadline.com/privacy).
 
@@ -114,12 +114,14 @@ MIT
 The skill also supports the additive supplier-events-v3 discovery interface when the connected server exposes it. It discovers exact scope support and questions before collecting facts, binds calculations to returned source identities, and preserves review-required outcomes. This client capability does not claim that additional jurisdictions are live.
 
 
-## Pending release candidate
+## Version 1.4.0
 
-Plugin metadata is prepared for 1.4.0. The Codex, Cursor and Gemini package pins remain
-`liendeadline-mcp@0.4.2`, the existing published package. MCP 0.5.0 adds the v3 discovery and
-calculation tools; update those pins only after 0.5.0 is published and verified, following
-[the MCP release procedure](https://github.com/LienDeadline/liendeadline-mcp/blob/main/RELEASING.md).
-Hosted MCP deployment is separate from package publication. The skill discovers available
-tools and uses the v3 interface only when available; this candidate does not claim additional
-live jurisdictions or a completed publication.
+The Codex, Cursor and Gemini manifests pin the published `liendeadline-mcp@0.5.0`
+[release](https://github.com/LienDeadline/liendeadline-mcp/releases/tag/v0.5.0), which adds
+supplier-events-v3 discovery and calculation tools. Package publication and the hosted MCP
+deployment were verified separately on October 6, 2026.
+
+The skill discovers available tools and preserves review-required or unavailable results.
+This release keeps the existing Florida and Kansas v2 calculation coverage. Additional
+jurisdictions await policy approval, calendar completion and canonical activation tracked in
+[API issue #344](https://github.com/LienDeadline/liendeadline-api/issues/344).

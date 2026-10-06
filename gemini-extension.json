@@ -3,6 +3,6 @@
   "version": "1.4.0",
   "description": "Supplier notice and mechanics lien deadline baselines for Florida and Kansas private projects, plus statute-cited guides for all 50 states and DC. Other supplier calculations require review.",
   "mcpServers": {
-    "liendeadline": { "command": "npx", "args": ["-y", "liendeadline-mcp@0.4.2"] }
+    "liendeadline": { "command": "npx", "args": ["-y", "liendeadline-mcp@0.5.0"] }
   }
 }
