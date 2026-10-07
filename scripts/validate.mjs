@@ -218,11 +218,11 @@ check(prose.split(/\s+/).filter(Boolean).length >= 40, "README.md needs at least
 check(existsSync(join(root, "LICENSE")), "LICENSE is missing");
 
 const supplierContractTest = spawnSync(
-  process.execPath, ["--test", join(root, "scripts", "supplier-v2-contract.test.mjs")],
+  process.execPath, ["--test", join(root, "scripts", "supplier-v2-contract.test.mjs"), join(root, "scripts", "supplier-v3-guidance.test.mjs")],
   { encoding: "utf8" },
 );
 if (supplierContractTest.status !== 0) {
-  errors.push("supplier-events-v2 synthetic contract examples failed:\n" + supplierContractTest.stdout + supplierContractTest.stderr);
+  errors.push("supplier contract and guidance checks failed:\n" + supplierContractTest.stdout + supplierContractTest.stderr);
 }
 
 if (errors.length) {
