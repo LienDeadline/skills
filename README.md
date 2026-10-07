@@ -6,7 +6,7 @@
 [![skills.sh](https://skills.sh/b/liendeadline/skills)](https://skills.sh/liendeadline/skills)
 [![Listed in Claude's Connectors directory](https://img.shields.io/badge/Claude-Connectors_directory-D97757?logo=claude&logoColor=white)](https://claude.ai/directory/connectors/liendeadline)
 [![Latest release](https://img.shields.io/github/v/release/LienDeadline/skills?color=205E4E)](https://github.com/LienDeadline/skills/releases/latest)
-[![MIT license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
+[![MIT license](https://img.shields.io/badge/license-MIT-blue)](https://github.com/LienDeadline/skills/blob/main/LICENSE)
 
 **Give your AI agent a lien deadline playbook: it asks for the facts that matter, gets each date
 from LienDeadline, and cites the statute behind it.**
@@ -147,7 +147,7 @@ sends LienDeadline only the structured facts it needs.
 - **Only the facts it needs.** State, delivery dates, project type, who hired you, and yes, no or
   unknown answers, with an event's date when the answer is yes. LienDeadline uses them to calculate
   your dates and doesn't keep them.
-- **Anonymous usage counts.** LienDeadline counts usage in aggregate with PostHog: which tool or
+- **Anonymous usage counts.** LienDeadline may count usage in aggregate with PostHog: which tool or
   API operation ran, the type of client, whether it worked and how long it took. When your agent
   calls the API directly, the skill adds a fixed `X-LienDeadline-Client: skill` header so those
   calls count as skill use. The counts never include your project facts, results, IP address or
@@ -185,11 +185,11 @@ No. It reads and calculates only.
 - **Support:** [support@liendeadline.com](mailto:support@liendeadline.com),
   [liendeadline.com/contact](https://liendeadline.com/contact) or an
   [issue in this repository](https://github.com/LienDeadline/skills/issues)
-- **Security:** report issues privately as described in [SECURITY.md](SECURITY.md)
+- **Security:** report issues privately as described in [SECURITY.md](https://github.com/LienDeadline/skills/blob/main/SECURITY.md)
 
 **For contributors:** the repository layout, checks and manifest notes are in
-[CONTRIBUTING.md](CONTRIBUTING.md).
+[CONTRIBUTING.md](https://github.com/LienDeadline/skills/blob/main/CONTRIBUTING.md).
 
 ## License
 
-[MIT](LICENSE)
+[MIT](https://github.com/LienDeadline/skills/blob/main/LICENSE)
