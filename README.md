@@ -1,7 +1,7 @@
-<picture>
+<a href="https://liendeadline.com/agent-skill?utm_source=github&utm_medium=readme&utm_campaign=liendeadline-skills"><picture>
   <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/LienDeadline/liendeadline-mcp/main/assets/readme/hero-dark.svg">
   <img alt="LienDeadline: mechanics lien and notice deadlines for AI assistants" src="https://raw.githubusercontent.com/LienDeadline/liendeadline-mcp/main/assets/readme/hero-light.svg" width="100%">
-</picture>
+</picture></a>
 
 [![skills.sh](https://skills.sh/b/liendeadline/skills)](https://skills.sh/liendeadline/skills)
 [![Listed in Claude's Connectors directory](https://img.shields.io/badge/Claude-Connectors_directory-D97757?logo=claude&logoColor=white)](https://claude.ai/directory/connectors/liendeadline)
@@ -17,7 +17,7 @@ with Claude Code, Codex, Cursor, Gemini CLI, GitHub Copilot and other agents tha
 explains why. It never guesses.
 
 [Install](#install) · [Try asking](#try-asking) · [Coverage](#what-it-covers) ·
-[Privacy](#privacy-and-safety) · [FAQ](#faq) · [liendeadline.com](https://liendeadline.com)
+[Privacy](#privacy-and-safety) · [FAQ](#faq) · [liendeadline.com](https://liendeadline.com/?utm_source=github&utm_medium=readme&utm_campaign=liendeadline-skills)
 
 ## Why it matters
 
@@ -135,7 +135,7 @@ sends LienDeadline only the structured facts it needs.
 
 - **Claude Code plugin:** uses LienDeadline's hosted server, so nothing runs on your computer.
 - **Codex, Cursor and Gemini CLI packages:** start the open-source
-  [LienDeadline MCP server](https://github.com/LienDeadline/liendeadline-mcp) on your computer with
+  [LienDeadline MCP server](https://liendeadline.com/mcp?utm_source=github&utm_medium=readme&utm_campaign=liendeadline-skills) ([GitHub](https://github.com/LienDeadline/liendeadline-mcp)) on your computer with
   `npx`, pinned to one exact release. This needs Node.js 22.22 or newer.
 - **The skill on its own:** uses the LienDeadline tools if you've connected them, or calls the
   public API over HTTPS.
@@ -179,9 +179,9 @@ No. It reads and calculates only.
 
 ## Links
 
-- **Website:** [liendeadline.com](https://liendeadline.com)
+- **Website:** [liendeadline.com](https://liendeadline.com/?utm_source=github&utm_medium=readme&utm_campaign=liendeadline-skills), with a [setup guide for this skill](https://liendeadline.com/agent-skill?utm_source=github&utm_medium=readme&utm_campaign=liendeadline-skills)
 - **State lien guides:** [liendeadline.com/state-lien-guides](https://liendeadline.com/state-lien-guides)
-- **MCP server:** [LienDeadline/liendeadline-mcp](https://github.com/LienDeadline/liendeadline-mcp)
+- **MCP server:** [liendeadline.com/mcp](https://liendeadline.com/mcp?utm_source=github&utm_medium=readme&utm_campaign=liendeadline-skills) and [LienDeadline/liendeadline-mcp](https://github.com/LienDeadline/liendeadline-mcp)
 - **Help center:** [liendeadline.com/help](https://liendeadline.com/help)
 - **Support:** [support@liendeadline.com](mailto:support@liendeadline.com),
   [liendeadline.com/contact](https://liendeadline.com/contact) or an
