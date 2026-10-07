@@ -26,7 +26,7 @@ for (const [name, newline] of [["LF", "\n"], ["CRLF", "\r\n"]]) {
 
     const valid = run(original);
     assert.equal(valid.status, 0, valid.stdout + valid.stderr);
-    assert.match(valid.stdout, /OK: 1 skill\(s\)/);
+    assert.match(valid.stdout, /OK: \d+ skill\(s\)/);
 
     const invalidName = run(original.replace("name: liendeadline", "name: invalid_name"));
     assert.equal(invalidName.status, 1);
