@@ -182,9 +182,12 @@ No. It reads and calculates only.
 - **Website:** [liendeadline.com](https://liendeadline.com)
 - **State lien guides:** [liendeadline.com/state-lien-guides](https://liendeadline.com/state-lien-guides)
 - **MCP server:** [LienDeadline/liendeadline-mcp](https://github.com/LienDeadline/liendeadline-mcp)
+- **Help center:** [liendeadline.com/help](https://liendeadline.com/help)
 - **Support:** [support@liendeadline.com](mailto:support@liendeadline.com),
   [liendeadline.com/contact](https://liendeadline.com/contact) or an
   [issue in this repository](https://github.com/LienDeadline/skills/issues)
+- **Privacy policy:** [liendeadline.com/privacy](https://liendeadline.com/privacy)
+- **Terms of service:** [liendeadline.com/terms](https://liendeadline.com/terms)
 - **Security:** report issues privately as described in [SECURITY.md](https://github.com/LienDeadline/skills/blob/main/SECURITY.md)
 
 **For contributors:** the repository layout, checks and manifest notes are in
