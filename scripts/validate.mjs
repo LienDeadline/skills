@@ -142,7 +142,7 @@ for (const [file, server] of [
   ["gemini-extension.json", gemini.mcpServers?.liendeadline],
 ]) {
   if (!server) { errors.push(`${file}: missing the liendeadline MCP server`); continue; }
-  check(server.command === "npx", `${file}: command must be the single token "npx"`);
+  check(server.command === "npx", `${file}: command must be exactly "npx"`);
   const pin = (server.args ?? []).find((arg) => arg.startsWith("liendeadline-mcp"));
   check(pin && PIN.test(pin), `${file}: pin liendeadline-mcp to an exact version`);
   if (pin) pins.add(pin);
