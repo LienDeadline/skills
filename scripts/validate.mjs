@@ -15,7 +15,8 @@ const FRONTMATTER_KEYS = new Set(["name", "description", "license", "compatibili
 const NAME = /^[a-z0-9]+(-[a-z0-9]+)*$/;
 
 function frontmatter(path) {
-  const text = readFileSync(path, "utf8");
+  // Git checkouts may use CRLF; parse Markdown independently of checkout line endings.
+  const text = readFileSync(path, "utf8").replace(/\r\n/g, "\n");
   const match = /^---\n([\s\S]*?)\n---\n/.exec(text);
   if (!match) return { fields: null, text };
   const fields = {};
