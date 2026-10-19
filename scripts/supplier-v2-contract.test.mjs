@@ -49,7 +49,7 @@ const sourceCases = {
 };
 
 function readExamples() {
-  const skill = readFileSync(new URL("../skills/liendeadline/SKILL.md", import.meta.url), "utf8");
+  const skill = readFileSync(new URL("../skills/liendeadline/SKILL.md", import.meta.url), "utf8").replace(/\r\n/g, "\n");
   const match = /## Same-facts examples \(synthetic\)[\s\S]*?```json\n([\s\S]*?)\n```/.exec(skill);
   assert.ok(match, "the skill must include the checked synthetic v2 examples");
   return JSON.parse(match[1]);

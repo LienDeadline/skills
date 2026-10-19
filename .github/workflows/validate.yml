@@ -20,7 +20,9 @@ jobs:
         with:
           node-version: "22"
       - name: Skill, layout and manifest rules
-        run: node scripts/validate.mjs
+        run: |
+          node scripts/validate.mjs
+          node --test scripts/validate.test.mjs
 
   live:
     # Weekly and on demand only: pull requests must not depend on the website or npm.
