@@ -34,6 +34,6 @@ for (const [name, newline] of [["LF", "\n"], ["CRLF", "\r\n"]]) {
 
     const invalidExample = run(original.replace('"id": "fl_known_no"', '"id": "unknown_case"'));
     assert.equal(invalidExample.status, 1);
-    assert.match(invalidExample.stderr, /synthetic contract examples failed/);
+    assert.match(invalidExample.stderr, /supplier contract and guidance checks failed/);
   });
 }
