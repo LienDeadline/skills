@@ -1,8 +1,8 @@
 {
   "name": "liendeadline",
   "displayName": "LienDeadline",
-  "version": "1.4.3",
-  "description": "Supplier notice and mechanics lien deadline baselines for Florida and Kansas private projects, plus statute-cited guides for all 50 states and DC. Other supplier calculations require review.",
+  "version": "1.4.4",
+  "description": "Supplier notice and mechanics lien baselines: supplier-events-v2 for Florida and Kansas private projects; additional v3 scope support comes from authenticated live discovery. Statute-cited guides cover all 50 states and DC.",
   "author": { "name": "LienDeadline", "email": "support@liendeadline.com" },
   "homepage": "https://liendeadline.com",
   "repository": "https://github.com/LienDeadline/skills",
