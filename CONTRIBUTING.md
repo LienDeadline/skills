@@ -22,8 +22,8 @@ issue or pull request.
 | `.codex-plugin/plugin.json` | Codex: the plugin's listing (name, icon, links and default prompts) |
 | `.cursor-plugin/plugin.json` | Cursor |
 | `gemini-extension.json` | Gemini CLI |
-| `scripts/` | Developer and CI checks. No package runs them. |
-| `.github/` | The CI workflow and Dependabot configuration |
+| `scripts/` | Local source checks and the explicit website parity check. No plugin runs them. |
+| `AGENTS.md` | Local check default and Ops runner ownership |
 
 ## How each package runs the MCP server
 
@@ -44,7 +44,7 @@ The plugins contain no API-key values. Supplier discovery and calculations throu
   `scripts/validate.mjs` checks its fields, and `scripts/supplier-v2-contract.test.mjs` checks the
   synthetic examples.
 - The same `SKILL.md` is published at https://liendeadline.com/skills/liendeadline/SKILL.md.
-  Maintainers update that copy when the skill changes, and the weekly live check reports any
+  Maintainers update that copy when the skill changes, and an explicitly requested live check reports any
   difference.
 
 ## Checks
@@ -52,12 +52,14 @@ The plugins contain no API-key values. Supplier discovery and calculations throu
 Run these before every commit:
 
 ```bash
-node scripts/validate.mjs
-git diff --check
+bash scripts/check-local.sh
 ```
 
 `scripts/validate.mjs` runs offline: it reads no environment variables and makes no network
-requests. CI runs it on every push and pull request. It checks:
+requests. The local entrypoint runs it and `node --test scripts/validate.test.mjs`,
+then `git diff --check`. It accepts `NODE_EXECUTABLE`; no dependency installation is needed.
+The [Ops runner](../liendeadline-ops/docs/local-ci.md) supplies its locked Node runtime and
+records isolated local results. GitHub Actions and their schedule are removed. The validator checks:
 
 - **The skill:** only Agent Skills frontmatter keys; `name` matches its folder; a description of
   1 to 1,024 characters; a compatibility note of at most 500 characters; `SKILL.md` under 500 lines.
@@ -74,8 +76,21 @@ requests. CI runs it on every push and pull request. It checks:
   Anthropic's directory requires.
 
 `node scripts/check-live.mjs` compares the website's copy of `SKILL.md` with this repository's.
-CI runs it weekly and on demand, never on pull requests, so a pull request never depends on the
-website or npm.
+Run it only for an explicitly authorized live parity task; it is excluded from the default
+source gate. It fetches the fixed public website URL without customer credentials. There is no
+automatic schedule or GitHub failure alert. The current script does not query npm; release pins
+are checked statically by the offline validator.
+
+### Former jobs
+
+| Former workflow/job | Local replacement | Execution |
+| --- | --- | --- |
+| `validate.yml` / `validate` | `bash scripts/check-local.sh` | Default offline source gate |
+| `validate.yml` / `live` | `node scripts/check-live.mjs` | Explicit live website parity task |
+
+The old live job title also mentioned the pinned MCP release, but its script only fetched the
+website copy. The offline validator continues to enforce exact matching MCP release pins.
+No dependency install, formatter, audit or secret-scan job was defined here.
 
 ## Manifest notes
 
