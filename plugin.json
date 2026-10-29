@@ -1,7 +1,7 @@
 {
   "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
   "name": "liendeadline",
-  "version": "1.4.4",
+  "version": "1.4.5",
   "description": "Jurisdiction-specific supplier notice and mechanics lien baselines with live discovery for the exact project scope. Calculations require a customer API key and use plan allowance; statute-cited guides for all 50 states and DC remain public.",
   "author": { "name": "LienDeadline", "url": "https://liendeadline.com" },
   "homepage": "https://liendeadline.com",
