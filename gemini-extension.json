@@ -3,6 +3,6 @@
   "version": "1.4.5",
   "description": "Jurisdiction-specific supplier notice and mechanics lien baselines with live discovery for the exact project scope. Calculations require a customer API key and use plan allowance; statute-cited guides for all 50 states and DC remain public.",
   "mcpServers": {
-    "liendeadline": { "command": "npx", "args": ["-y", "liendeadline-mcp@0.5.5"] }
+    "liendeadline": { "command": "npx", "args": ["-y", "liendeadline-mcp@0.5.7"] }
   }
 }
