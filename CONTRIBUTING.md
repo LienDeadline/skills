@@ -31,7 +31,7 @@ issue or pull request.
 | --- | --- |
 | Claude Code plugin | The hosted endpoint `https://mcp.liendeadline.com/mcp` over Streamable HTTP. Nothing is installed or run locally, so the plugin also works in Cowork and the Claude apps. |
 | Codex, Cursor and Gemini CLI | [`liendeadline-mcp`](https://github.com/LienDeadline/liendeadline-mcp), started locally over stdio with `npx -y liendeadline-mcp@<version>`. `mcp.json` and `gemini-extension.json` pin one exact release, and the package's published `npm-shrinkwrap.json` locks every dependency version. |
-| The skill on its own | Any LienDeadline MCP server the user has connected, or a direct HTTPS call to the public API |
+| The skill on its own | Any LienDeadline MCP server the user has connected, or a direct HTTPS API call with caller credentials for supplier operations |
 
 The plugins contain no API-key values. Supplier discovery and calculations through MCP or direct API require a dedicated caller key; completed calculations consume API plan allowance. State guides remain public. The Website's ordinary anonymous calculation allowance is separate.
 
