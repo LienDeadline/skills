@@ -6,7 +6,7 @@
     {
       "name": "liendeadline",
       "source": "./",
-      "description": "Jurisdiction-specific supplier notice and mechanics lien baselines with live discovery for the exact project scope. Calculations require a customer API key and use plan allowance; statute-cited guides for all 50 states and DC remain public.",
+      "description": "Supplier notice and mechanics lien baselines for reviewed private scopes across all 50 states and DC. Live discovery checks the exact project scope. A customer API key is required; completed calculations use plan allowance. State guides are public.",
       "category": "productivity",
       "tags": ["construction", "legal", "deadlines"]
     }
