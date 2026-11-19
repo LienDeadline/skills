@@ -8,6 +8,12 @@ Questions and bug reports are welcome as [issues](https://github.com/LienDeadlin
 Report security issues privately as described in [SECURITY.md](SECURITY.md), never in a public
 issue or pull request.
 
+Pull requests are welcome here too. This repository is a release mirror: each release arrives
+as one snapshot commit from the maintainers' private source repository, through a
+`release/vX.Y.Z` pull request. A maintainer who accepts your pull request re-applies the change
+in that source, and it reaches this repository with the next release snapshot. Your pull request
+is then closed, not merged, with a note saying so.
+
 ## Repository layout
 
 | Path | Used by |
@@ -23,7 +29,6 @@ issue or pull request.
 | `.cursor-plugin/plugin.json` | Cursor |
 | `gemini-extension.json` | Gemini CLI |
 | `scripts/` | Local source checks and the explicit website parity check. No plugin runs them. |
-| `AGENTS.md` | Local check default and Ops runner ownership |
 
 ## How each package runs the MCP server
 
@@ -58,8 +63,7 @@ bash scripts/check-local.sh
 `scripts/validate.mjs` runs offline: it reads no environment variables and makes no network
 requests. The local entrypoint runs it and `node --test scripts/validate.test.mjs`,
 then `git diff --check`. It accepts `NODE_EXECUTABLE`; no dependency installation is needed.
-The [Ops runner](../liendeadline-ops/docs/local-ci.md) supplies its locked Node runtime and
-records isolated local results. GitHub Actions and their schedule are removed. The validator checks:
+This repository has no GitHub Actions workflows or scheduled checks. The validator checks:
 
 - **The skill:** only Agent Skills frontmatter keys; `name` matches its folder; a description of
   1 to 1,024 characters; a compatibility note of at most 500 characters; `SKILL.md` under 500 lines.
@@ -126,5 +130,7 @@ No dependency install, formatter, audit or secret-scan job was defined here.
 ## Versions and releases
 
 Every manifest carries the same version, and `scripts/validate.mjs` enforces it. Claude Code
-updates an installed plugin only when that version changes. Maintainers handle version bumps,
-updates to the MCP pin and releases.
+updates an installed plugin only when that version changes. Don't change versions or the MCP pin
+in a pull request. Maintainers update the version in all five manifests together for each
+release, and update the MCP pin after a new `liendeadline-mcp` release is available on npm. Each
+release reaches this repository as one release pull request that a maintainer reviews and merges.
