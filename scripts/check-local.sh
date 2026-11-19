@@ -6,4 +6,4 @@ cd "$(dirname "$0")/.."
 node_executable="${NODE_EXECUTABLE:-node}"
 "$node_executable" scripts/validate.mjs
 "$node_executable" --test scripts/validate.test.mjs
-git diff --check
+git diff --check -- .
